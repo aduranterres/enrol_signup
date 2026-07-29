@@ -17,7 +17,7 @@
 /**
  * Signup enrolment plugin version specification.
  *
- * @package    enrol
+ * @package    enrol_signup
  * @subpackage signup
  * @copyright  2011 Antonio Duran Terres
  * @author     Antonio Duran
@@ -26,8 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2011111507;
-$plugin->requires = 2014051200;
+$plugin->version  = 2026072100;
+$plugin->requires = 2024100712;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = "0.7";
+$plugin->release = "1.0";
 $plugin->component = 'enrol_signup';

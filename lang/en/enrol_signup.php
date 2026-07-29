@@ -14,15 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-$string['enrolname'] = 'Signup';
-$string['pluginname'] = 'Signup';
-$string['pluginname_desc'] = 'Enrols the user in the course when he signs up in Moodle';
+/**
+ * Language strings for the signup enrolment plugin.
+ *
+ * @package    enrol_signup
+ * @copyright  2011 Antonio Duran Terres
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 $string['assignrole'] = 'Assign role';
 $string['defaultrole'] = 'Default role assignment';
 $string['defaultrole_desc'] = 'Select role which should be assigned to users';
 $string['enrolenddate'] = 'End date';
 $string['enrolenddaterror'] = 'Enrolment end date cannot be earlier than start date';
+$string['enrolname'] = 'Signup';
 $string['enrolperiod'] = 'Enrolment period';
 $string['enrolperiod_desc'] = 'Default length of the enrolment period (in seconds).';
 $string['enrolstartdate'] = 'Start date';
@@ -30,6 +35,9 @@ $string['mailadmins'] = 'Notify admin';
 $string['mailstudents'] = 'Notify students';
 $string['mailteachers'] = 'Notify teachers';
 $string['nocost'] = 'There is no cost associated with enrolling in this course!';
+$string['pluginname'] = 'Signup';
+$string['pluginname_desc'] = 'Enrols the user in the course when he signs up in Moodle';
+
 $string['signup:config'] = 'Configure Signup enrol instances';
 $string['signup:manage'] = 'Manage enrolled users';
 $string['signup:unenrol'] = 'Unenrol users from course';

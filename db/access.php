@@ -17,39 +17,38 @@
 /**
  * Capabilities for signup enrolment plugin.
  *
- * @package    enrol
- * @subpackage signup
+ * @package    enrol_signup
+ * @copyright  2011 Antonio Duran Terres
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
-    'enrol/signup:config' => array(
+    'enrol/signup:config' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'manager' => CAP_ALLOW,
-        )
-    ),
+        ],
+    ],
 
-    'enrol/signup:manage' => array(
+    'enrol/signup:manage' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'manager' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-        )
-    ),
+        ],
+    ],
 
-    'enrol/signup:unenrol' => array(
+    'enrol/signup:unenrol' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'manager' => CAP_ALLOW,
-        )
-    ),
+        ],
+    ],
 
-);
-
+];

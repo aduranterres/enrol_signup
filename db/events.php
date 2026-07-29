@@ -14,14 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Event observers for the signup enrolment plugin.
+ *
+ * @package    enrol_signup
+ * @copyright  2011 Antonio Duran Terres
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 // Signup event handlers.
-$observers = array(
+$observers = [
 
-    array(
+    [
         'eventname' => '\core\event\user_created',
         'callback' => 'enrol_signup_handler::user_created',
-        'includefile' => '/enrol/signup/locallib.php'
-    ),
-);
+        'includefile' => '/enrol/signup/locallib.php',
+    ],
+];

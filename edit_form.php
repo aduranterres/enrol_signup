@@ -15,30 +15,40 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    enrol
- * @subpackage signup
+ * Form for editing signup enrolment instances.
+ *
+ * @package    enrol_signup
  * @copyright  2011 Antonio Duran Terres  {@link http://www.joomdle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Form for editing signup enrolment instances.
+ *
+ * @package enrol_signup
+ */
 class enrol_signup_edit_form extends moodleform {
-
+    /**
+     * Defines the form fields.
+     */
     public function definition() {
         $mform = $this->_form;
 
-        list($instance, $plugin, $context) = $this->_customdata;
+        [$instance, $plugin, $context] = $this->_customdata;
 
         $mform->addElement('header', 'header', get_string('pluginname', 'enrol_signup'));
 
         $mform->addElement('text', 'name', get_string('custominstancename', 'enrol'));
         $mform->setType('name', PARAM_TEXT);
 
-        $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
-                         ENROL_INSTANCE_DISABLED => get_string('no'));
+        $options = [
+            ENROL_INSTANCE_ENABLED => get_string('yes'),
+            ENROL_INSTANCE_DISABLED => get_string('no'),
+        ];
         $mform->addElement('select', 'status', get_string('status', 'enrol_signup'), $options);
         $mform->setDefault('status', $plugin->get_config('status'));
 
@@ -50,15 +60,28 @@ class enrol_signup_edit_form extends moodleform {
         $mform->addElement('select', 'roleid', get_string('assignrole', 'enrol_signup'), $roles);
         $mform->setDefault('roleid', $plugin->get_config('roleid'));
 
-        $mform->addElement('duration', 'enrolperiod', get_string('enrolperiod', 'enrol_signup'),
-                array('optional' => true, 'defaultunit' => 86400));
+        $mform->addElement(
+            'duration',
+            'enrolperiod',
+            get_string('enrolperiod', 'enrol_signup'),
+            ['optional' => true, 'defaultunit' => 86400]
+        );
         $mform->setDefault('enrolperiod', $plugin->get_config('enrolperiod'));
 
-        $mform->addElement('date_selector', 'enrolstartdate', get_string('enrolstartdate', 'enrol_signup'),
-                array('optional' => true));
+        $mform->addElement(
+            'date_selector',
+            'enrolstartdate',
+            get_string('enrolstartdate', 'enrol_signup'),
+            ['optional' => true]
+        );
         $mform->setDefault('enrolstartdate', 0);
 
-        $mform->addElement('date_selector', 'enrolenddate', get_string('enrolenddate', 'enrol_signup'), array('optional' => true));
+        $mform->addElement(
+            'date_selector',
+            'enrolenddate',
+            get_string('enrolenddate', 'enrol_signup'),
+            ['optional' => true]
+        );
         $mform->setDefault('enrolenddate', 0);
 
         $mform->addElement('hidden', 'id');
@@ -71,17 +94,20 @@ class enrol_signup_edit_form extends moodleform {
         $this->set_data($instance);
     }
 
+    /**
+     * Validates the submitted form data.
+     *
+     * @param array $data Submitted form data.
+     * @param array $files Submitted files.
+     * @return array Validation errors.
+     */
     public function validation($data, $files) {
-        global $DB, $CFG;
         $errors = parent::validation($data, $files);
 
-        list($instance, $plugin, $context) = $this->_customdata;
-
         if ($data['status'] == ENROL_INSTANCE_ENABLED) {
-            if (!empty($data['enrolenddate']) and $data['enrolenddate'] < $data['enrolstartdate']) {
+            if (!empty($data['enrolenddate']) && $data['enrolenddate'] < $data['enrolstartdate']) {
                 $errors['enrolenddate'] = get_string('enrolenddaterror', 'enrol_signup');
             }
-
         }
 
         return $errors;

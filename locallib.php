@@ -22,80 +22,72 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * Event handler for signup enrol plugin.
  */
 class enrol_signup_handler {
-
-    public static function user_created (\core\event\user_created $event) {
-        global $CFG, $DB;
+    /**
+     * Enrols a newly created user in configured signup enrolment instances.
+     *
+     * @param \core\event\user_created $event User-created event.
+     * @return void
+     */
+    public static function user_created(\core\event\user_created $event) {
+        global $DB;
 
         $user = $event->get_record_snapshot('user', $event->objectid);
 
-        $signupinstances = $DB->get_records('enrol', array('enrol' => 'signup'));
-        foreach ($signupinstances as $si) {
-            $courseid = $si->courseid;
-            self::signup_enrol_user ($user->username, $courseid, $si->roleid);
+        $signupinstances = $DB->get_records('enrol', ['enrol' => 'signup', 'status' => ENROL_INSTANCE_ENABLED]);
+        foreach ($signupinstances as $instance) {
+            self::signup_enrol_user($user->username, $instance);
         }
     }
 
-    public static function signup_enrol_user ($username, $courseid, $roleid = 5) {
-        global $CFG, $DB, $PAGE;
+    /**
+     * Enrols a user using the specified signup enrolment instance.
+     *
+     * @param string $username Username to enrol.
+     * @param stdClass $instance Signup enrolment instance.
+     * @return int Success indicator.
+     */
+    public static function signup_enrol_user($username, stdClass $instance) {
+        global $DB;
 
-        require_once("$CFG->dirroot/enrol/locallib.php");
-
-        $conditions = array ('username' => $username);
-        $user = $DB->get_record('user', $conditions);
-        $conditions = array ('id' => $courseid);
-        $course = $DB->get_record('course', $conditions);
-
-        // First, check if user is already enroled but suspended, so we just need to enable it.
-        $conditions = array ('courseid' => $courseid, 'enrol' => 'manual');
-        $enrol = $DB->get_record('enrol', $conditions);
-
-        $conditions = array ('username' => $username);
+        $conditions = ['username' => $username];
         $user = $DB->get_record('user', $conditions);
 
-        $conditions = array ('enrolid' => $enrol->id, 'userid' => $user->id);
-        $ue = $DB->get_record('user_enrolments', $conditions);
-
-        if ($ue) {
-            // User already enroled but suspended. Just activate enrolment and return.
-            $ue->status = 0; // Active.
-            $DB->update_record('user_enrolments', $ue);
-            return 1;
+        if (!$user) {
+            return 0;
         }
 
-        $manager = new course_enrolment_manager($PAGE, $course);
-        $instances = $manager->get_enrolment_instances();
-        $plugins = $manager->get_enrolment_plugins();
+        $conditions = ['id' => $instance->courseid];
+        $course = $DB->get_record('course', $conditions);
+
+        if (!$course) {
+            return 0;
+        }
 
         $today = time();
-        $today = make_timestamp(date('Y', $today), date('m', $today), date('d', $today), date ('H', $today),
-                    date ('i', $today), date ('s', $today));
+        $today = make_timestamp(
+            date('Y', $today),
+            date('m', $today),
+            date('d', $today),
+            date('H', $today),
+            date('i', $today),
+            date('s', $today)
+        );
 
         $timestart = $today;
         $timeend = 0;
 
-        foreach ($instances as $instance) {
-            if ($instance->enrol == 'signup') {
-                break;
-            }
+        $plugin = enrol_get_plugin('signup');
+
+        if ($instance->enrolperiod) {
+            $timeend = $timestart + $instance->enrolperiod;
         }
 
-        $plugin = $plugins['signup'];
-
-        if ( $instance->enrolperiod) {
-            $timeend   = $timestart + $instance->enrolperiod;
-        }
-        $plugin->enrol_user($instance, $user->id, $roleid, $timestart, $timeend);
+        $plugin->enrol_user($instance, $user->id, $instance->roleid, $timestart, $timeend);
 
         return 1;
     }
-
-
 }

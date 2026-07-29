@@ -18,7 +18,7 @@
  * Adds new instance of enrol_signup to specified course
  * or edits current instance.
  *
- * @package    enrol
+ * @package    enrol_signup
  * @subpackage signup
  * @copyright  2011 Antonio Duran Terres  {@link http://www.joomdle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,16 +30,16 @@ require_once('edit_form.php');
 $courseid   = required_param('courseid', PARAM_INT);
 $instanceid = optional_param('id', 0, PARAM_INT);
 
-$course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 $context = context_course::instance($course->id);
 
 require_login($course);
 require_capability('enrol/signup:config', $context);
 
-$PAGE->set_url('/enrol/signup/edit.php', array('courseid' => $course->id, 'id' => $instanceid));
+$PAGE->set_url('/enrol/signup/edit.php', ['courseid' => $course->id, 'id' => $instanceid]);
 $PAGE->set_pagelayout('admin');
 
-$return = new moodle_url('/enrol/instances.php', array('id' => $course->id));
+$return = new moodle_url('/enrol/instances.php', ['id' => $course->id]);
 if (!enrol_is_enabled('signup')) {
     redirect($return);
 }
@@ -47,21 +47,20 @@ if (!enrol_is_enabled('signup')) {
 $plugin = enrol_get_plugin('signup');
 
 if ($instanceid) {
-    $instance = $DB->get_record('enrol', array('courseid' => $course->id, 'enrol' => 'signup',
-                'id' => $instanceid), '*', MUST_EXIST);
+    $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'signup',
+                'id' => $instanceid], '*', MUST_EXIST);
 } else {
     require_capability('moodle/course:enrolconfig', $context);
     // No instance yet, we have to add new instance.
-    navigation_node::override_active_url(new moodle_url('/enrol/instances.php', array('id' => $course->id)));
+    navigation_node::override_active_url(new moodle_url('/enrol/instances.php', ['id' => $course->id]));
     $instance = new stdClass();
     $instance->id       = null;
     $instance->courseid = $course->id;
 }
-$mform = new enrol_signup_edit_form(null, array($instance, $plugin, $context));
+$mform = new enrol_signup_edit_form(null, [$instance, $plugin, $context]);
 
 if ($mform->is_cancelled()) {
     redirect($return);
-
 } else if ($data = $mform->get_data()) {
     if ($instance->id) {
         $instance->status         = $data->status;
@@ -72,11 +71,10 @@ if ($mform->is_cancelled()) {
         $instance->enrolenddate   = $data->enrolenddate;
         $instance->timemodified   = time();
         $DB->update_record('enrol', $instance);
-
     } else {
-        $fields = array('status' => $data->status, 'name' => $data->name, 'roleid' => $data->roleid,
+        $fields = ['status' => $data->status, 'name' => $data->name, 'roleid' => $data->roleid,
                         'enrolperiod' => $data->enrolperiod, 'enrolstartdate' => $data->enrolstartdate,
-                        'enrolenddate' => $data->enrolenddate);
+                        'enrolenddate' => $data->enrolenddate];
         $plugin->add_instance($course, $fields);
     }
 

@@ -14,16 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Upgrade steps for the signup enrolment plugin.
+ *
+ * @package    enrol_signup
+ * @copyright  2011 Antonio Duran Terres
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
+/**
+ * Upgrades the signup enrolment plugin.
+ *
+ * @param int $oldversion Version being upgraded from.
+ * @return bool
+ */
 function xmldb_enrol_signup_upgrade($oldversion) {
     global $DB;
-    $dbman = $DB->get_manager();
-
-    if ($oldversion < 2011111506) {
-        $sql = "DELETE FROM {events_handlers} WHERE component = 'signup'";
-        $DB->execute($sql);
-    }
 
     return true;
 }

@@ -17,15 +17,18 @@
 /**
  * Signup enrolment plugin installation.
  *
- * @package    enrol
+ * @package    enrol_signup
  * @subpackage signup
  * @author     Antonio Duran Terres
  * @copyright  2011 Antonio Duran Terres
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Performs post-installation actions for the signup enrolment plugin.
+ *
+ * @return void
+ */
 function xmldb_enrol_signup_install() {
     global $CFG, $DB;
 }

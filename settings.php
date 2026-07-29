@@ -17,8 +17,7 @@
 /**
  * Signup enrolments plugin settings and presets.
  *
- * @package    enrol
- * @subpackage signup
+ * @package    enrol_signup
  * @copyright  2011 Antonio Duran Terres
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,23 +25,50 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
+    $settings->add(
+        new admin_setting_heading(
+            'enrol_signup_defaults',
+            get_string('enrolinstancedefaults', 'admin'),
+            get_string('enrolinstancedefaults_desc', 'admin')
+        )
+    );
 
-    $settings->add(new admin_setting_heading('enrol_signup_defaults',
-        get_string('enrolinstancedefaults', 'admin'), get_string('enrolinstancedefaults_desc', 'admin')));
-
-    $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
-                     ENROL_INSTANCE_DISABLED => get_string('no'));
-    $settings->add(new admin_setting_configselect('enrol_signup/status',
-        get_string('status', 'enrol_signup'), get_string('status_desc', 'enrol_signup'), ENROL_INSTANCE_DISABLED, $options));
+    $options = [
+        ENROL_INSTANCE_ENABLED => get_string('yes'),
+        ENROL_INSTANCE_DISABLED => get_string('no'),
+    ];
+    $settings->add(
+        new admin_setting_configselect(
+            'enrol_signup/status',
+            get_string('status', 'enrol_signup'),
+            get_string('status_desc', 'enrol_signup'),
+            ENROL_INSTANCE_DISABLED,
+            $options
+        )
+    );
 
     if (!during_initial_install()) {
         $options = get_default_enrol_roles(context_system::instance());
         $student = get_archetype_roles('student');
         $student = reset($student);
-        $settings->add(new admin_setting_configselect('enrol_signup/roleid',
-            get_string('defaultrole', 'enrol_signup'), get_string('defaultrole_desc', 'enrol_signup'), $student->id, $options));
+        $settings->add(
+            new admin_setting_configselect(
+                'enrol_signup/roleid',
+                get_string('defaultrole', 'enrol_signup'),
+                get_string('defaultrole_desc', 'enrol_signup'),
+                $student->id,
+                $options
+            )
+        );
     }
 
-    $settings->add(new admin_setting_configtext('enrol_signup/enrolperiod',
-        get_string('enrolperiod', 'enrol_signup'), get_string('enrolperiod_desc', 'enrol_signup'), 0, PARAM_INT));
+    $settings->add(
+        new admin_setting_configtext(
+            'enrol_signup/enrolperiod',
+            get_string('enrolperiod', 'enrol_signup'),
+            get_string('enrolperiod_desc', 'enrol_signup'),
+            0,
+            PARAM_INT
+        )
+    );
 }

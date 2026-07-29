@@ -19,8 +19,8 @@
  *
  * This plugin allows you to set courses to enrol users to when they sign up to Moodle
  *
- * @package    enrol
- * @subpackage signup
+ * @package    enrol_signup
+ * @copyright  2011 Antonio Duran Terres
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,23 +28,61 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->dirroot/enrol/locallib.php");
 
+/**
+ * Signup enrolment plugin implementation.
+ *
+ * @package enrol_signup
+ */
 class enrol_signup_plugin extends enrol_plugin {
-
+    /**
+     * Indicates whether assigned roles are protected from changes.
+     *
+     * @return bool
+     */
     public function roles_protected() {
         // Users with role assign cap may tweak the roles later.
         return false;
     }
 
+    /**
+     * Indicates whether users can be unenrolled from an instance.
+     *
+     * @param stdClass $instance Enrolment instance.
+     * @return bool
+     */
     public function allow_unenrol(stdClass $instance) {
         return true;
     }
 
+    /**
+     * Indicates whether an instance allows manual management of enrolments.
+     *
+     * @param stdClass $instance Enrolment instance.
+     * @return bool
+     */
     public function allow_manage(stdClass $instance) {
         return true;
     }
 
+    /**
+     * Indicates whether the enrolment link should be displayed.
+     *
+     * @param stdClass $instance Enrolment instance.
+     * @return bool
+     */
     public function show_enrolme_link(stdClass $instance) {
-        return ($instance->status == ENROL_INSTANCE_ENABLED);
+        return false;
+    }
+
+    /**
+     * Is it possible to delete enrol instance via standard UI?
+     *
+     * @param object $instance
+     * @return bool
+     */
+    public function can_delete_instance($instance) {
+        $context = context_course::instance($instance->courseid);
+        return has_capability('enrol/guest:config', $context);
     }
 
     /**
@@ -61,8 +99,8 @@ class enrol_signup_plugin extends enrol_plugin {
         $context = context_course::instance($instance->courseid);
 
         if (has_capability('enrol/signup:config', $context)) {
-            $managelink = new moodle_url('/enrol/signup/edit.php', array('courseid' => $instance->courseid,
-                        'id' => $instance->id));
+            $managelink = new moodle_url('/enrol/signup/edit.php', ['courseid' => $instance->courseid,
+                        'id' => $instance->id]);
             $instancesnode->add($this->get_instance_name($instance), $managelink, navigation_node::TYPE_SETTING);
         }
     }
@@ -80,13 +118,17 @@ class enrol_signup_plugin extends enrol_plugin {
         }
         $context = context_course::instance($instance->courseid);
 
-        $icons = array();
+        $icons = [];
 
         if (has_capability('enrol/signup:config', $context)) {
-            $editlink = new moodle_url("/enrol/signup/edit.php", array('courseid' => $instance->courseid,
-                        'id' => $instance->id));
-            $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'),
-                        'core', array('class' => 'icon')));
+            $editlink = new moodle_url("/enrol/signup/edit.php", ['courseid' => $instance->courseid,
+                        'id' => $instance->id]);
+            $icons[] = $OUTPUT->action_icon($editlink, new pix_icon(
+                't/edit',
+                get_string('edit'),
+                'core',
+                ['class' => 'icon']
+            ));
         }
 
         return $icons;
@@ -100,11 +142,11 @@ class enrol_signup_plugin extends enrol_plugin {
     public function get_newinstance_link($courseid) {
         $context = context_course::instance($courseid);
 
-        if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/signup:config', $context)) {
+        if (!has_capability('moodle/course:enrolconfig', $context) || !has_capability('enrol/signup:config', $context)) {
             return null;
         }
 
-        return new moodle_url('/enrol/signup/edit.php', array('courseid' => $courseid));
+        return new moodle_url('/enrol/signup/edit.php', ['courseid' => $courseid]);
     }
 
     /**
@@ -117,5 +159,4 @@ class enrol_signup_plugin extends enrol_plugin {
         $context = context_course::instance($instance->courseid);
         return has_capability('enrol/signup:config', $context);
     }
-
 }
