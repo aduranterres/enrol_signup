@@ -18,7 +18,7 @@
  * Signup event handlers
  *
  * @package    enrol_signup
- * @copyright  2011 Qontori Pte Ltd
+ * @copyright  2011 Antonio Duran Terres
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
